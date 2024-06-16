@@ -22,6 +22,7 @@ const useDropdown = <T>({
   const [scrollToIndex, setScrollToIndex] = useState<number | undefined>(undefined);
 
   useEffect(() => {
+    // Update value if dropdown prop 'value' was changed
     if (initialValue && value !== initialValue) {
       setValue(initialValue);
     }
@@ -29,15 +30,19 @@ const useDropdown = <T>({
 
   useEffect(() => {
     if (isOpen) {
+      // scroll to active element when dropdown is open
       setScrollToIndex(data.findIndex(v => v === value));
     } else {
+      // reset hovered option when dropdown is closed
       setActive(undefined);
     }
   }, [isOpen]);
 
+  // toggle dropdown
   const handleClick = useCallback(() => setOpen(prev => !prev), [setOpen]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLSelectElement>) => {
+    // user can open dropdown with some keyboard keys
     if (
       !isOpen &&
       [KeyCode.Space, KeyCode.Enter, KeyCode.ArrowDown, KeyCode.ArrowUp].includes(
@@ -45,35 +50,52 @@ const useDropdown = <T>({
       )
     ) {
       setOpen(true);
-    } else if (isOpen && [KeyCode.ArrowDown].includes(event.code as KeyCode)) {
+    }
+    // user can navigate through options with arrows
+    else if (isOpen && [KeyCode.ArrowDown].includes(event.code as KeyCode)) {
       const idx = data.findIndex(v => v === (active || value));
+      // show hovered option
       setActive(data[idx < data.length - 1 ? idx + 1 : 0]);
+      // scroll virtualized list
       setScrollToIndex(idx < data.length - 1 ? idx + 1 : 0);
-    } else if (isOpen && [KeyCode.ArrowUp].includes(event.code as KeyCode)) {
+    }
+    // user can navigate through options with arrows
+    else if (isOpen && [KeyCode.ArrowUp].includes(event.code as KeyCode)) {
       const idx = data.findIndex(v => v === (active || value));
+      // show hovered option
       setActive(data[idx === 0 ? data.length - 1 : idx - 1]);
+      // scroll virtualized list
       setScrollToIndex(idx === 0 ? data.length - 1 : idx - 1);
     } else if (isOpen && [KeyCode.Space, KeyCode.Enter].includes(event.code as KeyCode)) {
+      // select value
       setValue(active || value);
+      // cb to pass value outside
       onChange?.((active || value) as T);
+      // close dropdown when value was selected
       setOpen(false);
     } else if ([KeyCode.Escape].includes(event.code as KeyCode)) {
+      // close dropdown
       setOpen(false);
+      // if dropdown is closed call blur to dismiss focus
       if (!isOpen) {
         refSelect?.current?.blur();
       }
     }
+    // execute custom handler
     onKeyDown?.(event);
   };
 
+  // select option
   const handleOptionClick = useCallback(
     (index: T) => () => {
       setValue(index);
+      // cb to pass value outside
       onChange?.(index);
     },
     [setValue, onChange],
   );
 
+  // set active to show styles for hovered option
   const handleOptionHover = useCallback((index: T) => () => setActive(index), [setActive]);
 
   return {
