@@ -68,7 +68,7 @@ const Dropdown = <T extends string | number>({
         onBlur={onBlur}
         onKeyDown={handleKeyDown}
       />
-      <div className="h-10 rounded border border-neutral-400 bg-neutral-100 p-2 outline outline-0">
+      <div className="h-10 truncate rounded border border-neutral-400 bg-neutral-100 p-2 outline outline-0">
         {value || <span className="text-neutral-400">{placeholder}</span>}
       </div>
       {isOpen && (
