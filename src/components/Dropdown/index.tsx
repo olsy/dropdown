@@ -9,6 +9,7 @@ import useDropdown from './hooks/useDropdown';
 const noop = () => {};
 
 interface DropDownProps<T> {
+  placeholder?: string;
   value?: T;
   data: T[];
   onChange?: (value: T) => void;
@@ -18,6 +19,7 @@ interface DropDownProps<T> {
 }
 
 const Dropdown = <T extends string | number>({
+  placeholder,
   value: initialValue,
   data = [],
   onChange = noop,
@@ -67,7 +69,7 @@ const Dropdown = <T extends string | number>({
         onKeyDown={handleKeyDown}
       />
       <div className="h-10 rounded border border-neutral-400 bg-neutral-100 p-2 outline outline-0">
-        {value}
+        {value || <span className="text-neutral-400">{placeholder}</span>}
       </div>
       {isOpen && (
         <div className="absolute top-12 overflow-hidden rounded border border-neutral-400">

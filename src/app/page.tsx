@@ -35,6 +35,7 @@ export default function Home() {
             <option value="3">3</option>
           </select>
           <Dropdown<string>
+            placeholder="Select option..."
             // value={selected}
             data={data}
             // onChange={v => {
